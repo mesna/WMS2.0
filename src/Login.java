@@ -1,6 +1,7 @@
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -8,11 +9,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 
-
-/**
- * Created by Marko on 30.12.2016.
- */
 public class Login{
+
+    TextField userName = new TextField();
+    PasswordField passWord = new PasswordField();
+    Stage loginScreen = new Stage();
 
     public Login() {
 
@@ -21,20 +22,19 @@ public class Login{
         loginLayout.setHgap(10);
         loginLayout.setVgap(10);
 
-        TextField userName = new TextField();
         userName.setPromptText("Username");
-        PasswordField passWord = new PasswordField();
         passWord.setPromptText("Password");
 
         Button login = new Button("Login");
+        login.setOnAction(e -> checkLogin());
         Button exit = new Button("Exit");
+        exit.setOnAction(e -> Platform.exit());
 
         loginLayout.add(userName,1,0);
         loginLayout.add(passWord,1,1);
         loginLayout.add(login,1,2);
         loginLayout.add(exit,1,3);
 
-        Stage loginScreen = new Stage();
         loginScreen.setTitle("WMS 2.0");
         Scene loginWindow = new Scene(loginLayout, 300, 200);
         loginScreen.setScene(loginWindow);
@@ -47,5 +47,19 @@ public class Login{
             }
         });
     }
+
+    private void checkLogin(){
+        if(userName.getText().equals("User") && passWord.getText().equals("Password")){
+            MainWindow mainWindow = new MainWindow();
+            loginScreen.close();
+        } else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);      alert.setHeaderText(null);
+            alert.setContentText("Wrong Username or Password!");
+            alert.showAndWait();
+            passWord.clear();
+            userName.clear();
+        }
+    }
+
 
 }
