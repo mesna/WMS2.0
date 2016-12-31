@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-
 public class Login{
 
     TextField userName = new TextField();
@@ -49,7 +48,7 @@ public class Login{
     }
 
     private void checkLogin(){
-        if(userName.getText().equals("User") && passWord.getText().equals("Password")){
+        if(userName.getText().equals("a") && passWord.getText().equals("a")){
             MainWindow mainWindow = new MainWindow();
             loginScreen.close();
         } else{
