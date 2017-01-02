@@ -48,6 +48,7 @@ public class Login{
     }
 
     private void checkLogin(){
+
         if(userName.getText().equals("a") && passWord.getText().equals("a")){
             MainWindow mainWindow = new MainWindow();
             loginScreen.close();

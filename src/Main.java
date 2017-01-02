@@ -1,11 +1,19 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Main extends Application{
+
+    Login login = new Login();
+    Database data = new Database();
 
     public void start(Stage primaryStage) throws Exception{
 
-        Login login = new Login();
-        Database data = new Database();
+    }
+
+    public void addPro(String pName, Integer pQty, Integer pLocation) throws ClassNotFoundException, SQLException{
+        data.addProduct(pName, pQty, pLocation);
     }
 }

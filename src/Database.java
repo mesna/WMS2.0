@@ -3,45 +3,57 @@ import java.util.HashMap;
 
 public class Database{
 
-    Connection conn = null;
-//Database constructor
-    public Database(){
-        createConnection();
-        createTable();
+    private static Connection conn;
+    private static boolean notEmpty = false;
+
+    public ResultSet displayProducts() throws ClassNotFoundException, SQLException{
+
+        if(conn == null){
+            createConnection();
+        }
+        Statement state = conn.createStatement();
+        ResultSet result = state.executeQuery("SELECT nimi, kogus, asukoht FROM kaubad");
+        return result;
     }
-//Connecting to database
-    private void createConnection(){
-        try {
-            Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:wms.db");
-            System.out.println("Opened database successfully");
-        } catch (Exception e){
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+    private void createConnection() throws ClassNotFoundException, SQLException{
+
+        Class.forName("org.sqlite.JDBC");
+        conn = DriverManager.getConnection("jdbc:sqlite:wms.db");
+        runConnection();
+    }
+
+    private void runConnection() throws SQLException{
+
+        if(!notEmpty){
+            notEmpty = true;
+
+            Statement state = conn.createStatement();
+            ResultSet result = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='kaubad'");
+            if(!result.next()){
+                System.out.println("Creating a table for Products");
+
+                Statement state2 = conn.createStatement();
+                state2.execute("CREATE TABLE kaubad (id integer,nimi varchar(30),kogus integer, asukoht integer, primary key(id))");
+            }
         }
     }
-//Creating a database table
-    public void createTable(){
-        String sql = "CREATE TABLE IF NOT EXISTS KAUBAD (ID INT AUTO_INCREMENT, NAME TEXT, QTY INT, LOCATION INT);";
-        applyChanges(sql);
-    }
-//Applying changes to database table
-    public void applyChanges(String sql){
-        try{
-            Statement stat = conn.createStatement();
-            stat.executeUpdate(sql);
-            stat.close();
-        } catch(SQLException e){
-            e.printStackTrace();
+
+    public void addProduct(String pName, Integer pQty, Integer pLocation) throws ClassNotFoundException, SQLException{
+
+        if(conn == null){
+            createConnection();
+        }else{
+            PreparedStatement pAdd = conn.prepareStatement("INSERT INTO kaubad VALUES(?,?,?,?);");
+            pAdd.setString(2,pName);
+            pAdd.setInt(3,pQty);
+            pAdd.setInt(4,pLocation);
+            pAdd.execute();
         }
     }
-//Closing the connection
-    public void closeConnection(){
-        try{
-            conn.close();
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        System.out.println("Connection closed");
+
+    public void deleteProduct() throws ClassNotFoundException, SQLException{
+
     }
 
 }
