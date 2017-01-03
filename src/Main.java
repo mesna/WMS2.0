@@ -12,8 +12,4 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception{
 
     }
-
-    public void addPro(String pName, Integer pQty, Integer pLocation) throws ClassNotFoundException, SQLException{
-        data.addProduct(pName, pQty, pLocation);
-    }
 }

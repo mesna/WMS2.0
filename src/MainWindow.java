@@ -3,7 +3,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
+
 public class MainWindow {
+
+    Products product = new Products();
 
     public MainWindow(){
 
@@ -11,7 +15,15 @@ public class MainWindow {
         BorderPane layout = new BorderPane();
         MenuButton btnProducts = new MenuButton("Products");
         MenuItem addProductBtn = new MenuItem("Add Product");
-        addProductBtn.setOnAction(e -> Products.addProduct());
+        addProductBtn.setOnAction(e -> {
+            try {
+                product.addProduct();
+            } catch (ClassNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
         MenuItem deleteProductBtn = new MenuItem("Delete Product");
         btnProducts.getItems().addAll(addProductBtn,deleteProductBtn);
 

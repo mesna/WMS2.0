@@ -49,6 +49,7 @@ public class Database{
             pAdd.setInt(3,pQty);
             pAdd.setInt(4,pLocation);
             pAdd.execute();
+            conn.close();
         }
     }
 
