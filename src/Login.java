@@ -25,6 +25,7 @@ public class Login{
         passWord.setPromptText("Password");
 
         Button login = new Button("Login");
+        login.setDefaultButton(true);
         login.setOnAction(e -> checkLogin());
         Button exit = new Button("Exit");
         exit.setOnAction(e -> Platform.exit());
@@ -37,6 +38,7 @@ public class Login{
         loginScreen.setTitle("WMS 2.0");
         Scene loginWindow = new Scene(loginLayout, 300, 200);
         loginScreen.setScene(loginWindow);
+        loginScreen.setResizable(false);
         loginScreen.show();
 
         Platform.runLater(new Runnable() {
