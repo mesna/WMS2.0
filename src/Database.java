@@ -1,60 +1,72 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.*;
-import java.util.HashMap;
 
-public class Database{
+public class Database {
 
-    private static Connection conn;
-    private static boolean notEmpty = false;
-
-    public ResultSet displayProducts() throws ClassNotFoundException, SQLException{
-
-        if(conn == null){
-            createConnection();
+    public Database() {
+        try {
+            createDatabaseIfNecessary();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        Statement state = conn.createStatement();
-        ResultSet result = state.executeQuery("SELECT nimi, kogus, asukoht FROM kaubad");
-        return result;
     }
 
-    private void createConnection() throws ClassNotFoundException, SQLException{
+    public ObservableList<Products> displayProducts() throws ClassNotFoundException, SQLException {
 
-        Class.forName("org.sqlite.JDBC");
-        conn = DriverManager.getConnection("jdbc:sqlite:wms.db");
-        runConnection();
+        ObservableList<Products> productsList = FXCollections.observableArrayList();
+        try (Connection connection = getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                ResultSet rs = statement.executeQuery("SELECT name, quantity, destination FROM products");
+
+                while(rs.next()) {
+                    productsList.add(new Products(rs.getString("name"), rs.getInt("quantity"), rs.getInt("destination")));
+                }
+            }
+        }
+        return productsList;
     }
 
-    private void runConnection() throws SQLException{
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:wms.db");
+    }
 
-        if(!notEmpty){
-            notEmpty = true;
-
-            Statement state = conn.createStatement();
-            ResultSet result = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='kaubad'");
-            if(!result.next()){
+    private void createDatabaseIfNecessary() throws SQLException {
+        if (isDatabaseCreated()) {
+            return;
+        }
+        try (Connection connection = getConnection()) {
+            try (Statement statement = connection.createStatement()) {
                 System.out.println("Creating a table for Products");
-
-                Statement state2 = conn.createStatement();
-                state2.execute("CREATE TABLE kaubad (id integer,nimi varchar(30),kogus integer, asukoht integer, primary key(id))");
+                statement.execute("CREATE TABLE products (id integer,name varchar(30),quantity integer, destination integer, primary key(id))");
             }
         }
     }
 
-    public void addProduct(String pName, Integer pQty, Integer pLocation) throws ClassNotFoundException, SQLException{
-
-        if(conn == null){
-            createConnection();
-        }else{
-            PreparedStatement pAdd = conn.prepareStatement("INSERT INTO kaubad VALUES(?,?,?,?);");
-            pAdd.setString(2,pName);
-            pAdd.setInt(3,pQty);
-            pAdd.setInt(4,pLocation);
-            pAdd.execute();
-            conn.close();
+    private boolean isDatabaseCreated() throws SQLException {
+        try (Connection connection = getConnection()) {
+            try (Statement selectStatement = connection.createStatement()) {
+                ResultSet result = selectStatement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='products'");
+                if (result.next()) {
+                    return true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+        return false;
     }
 
-    public void deleteProduct() throws ClassNotFoundException, SQLException{
-
+    public void addProduct(String productName, Integer productQuantity, Integer productLocation) throws ClassNotFoundException, SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement productAdd = connection.prepareStatement("INSERT INTO products VALUES(?,?,?,?);");
+            productAdd.setString(2, productName);
+            productAdd.setInt(3, productQuantity);
+            productAdd.setInt(4, productLocation);
+            productAdd.execute();
+        }
     }
 
 }

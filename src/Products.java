@@ -11,24 +11,62 @@ import java.sql.SQLException;
 
 public class Products {
 
+    private String name;
+    private Integer quantity;
+    private Integer destination;
+
     Database data = new Database();
 
-    public void addProduct() throws ClassNotFoundException, SQLException{
+    public Products(){
+        
+    }
+
+    public Products(String name, Integer quantity, Integer destination){
+        this.name = name;
+        this.quantity = quantity;
+        this.destination = destination;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Integer destination) {
+        this.destination = destination;
+    }
+
+    public void addProductPage() throws ClassNotFoundException, SQLException{
 
         Stage window = new Stage();
         GridPane grid = new GridPane();
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
-        TextField pName = new TextField();
-        pName.setPromptText("Product name");
-        TextField pQty = new TextField();
-        pQty.setPromptText("Quantity");
-        TextField pLocation = new TextField();
-        pLocation.setPromptText("Location (Example 12345)");
-        Button addBtn = new Button("Add");
-        addBtn.setOnAction(e -> {
+        TextField productNameField = new TextField();
+        productNameField.setPromptText("Product name");
+        TextField productQuantityField = new TextField();
+        productQuantityField.setPromptText("Quantity");
+        TextField productDestinationField = new TextField();
+        productDestinationField.setPromptText("Location (Example 12345)");
+        Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
             try {
-                data.addProduct(pName.getText(), Integer.parseInt(pQty.getText()), Integer.parseInt(pLocation.getText()));
+                data.addProduct(productNameField.getText(), Integer.parseInt(productQuantityField.getText()), Integer.parseInt(productDestinationField.getText()));
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Product successfully added!");
                 alert.setHeaderText(null);
@@ -40,10 +78,10 @@ public class Products {
                 e1.printStackTrace();
             }
         });
-        grid.add(pName, 0, 0);
-        grid.add(pQty, 0, 1);
-        grid.add(pLocation, 0, 2);
-        grid.add(addBtn, 0, 3);
+        grid.add(productNameField, 0, 0);
+        grid.add(productQuantityField, 0, 1);
+        grid.add(productDestinationField, 0, 2);
+        grid.add(addButton, 0, 3);
         Scene content = new Scene(grid, 200,200);
         window.setScene(content);
         window.show();
@@ -51,7 +89,7 @@ public class Products {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                addBtn.requestFocus();
+                addButton.requestFocus();
             }
         });
     }

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Main extends Application{
 
     Login login = new Login();
-    Database data = new Database();
+    //Database data = new Database();
 
     public void start(Stage primaryStage) throws Exception{
 

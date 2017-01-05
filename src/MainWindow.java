@@ -1,6 +1,7 @@
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -8,8 +9,9 @@ import java.sql.SQLException;
 
 public class MainWindow {
 
-    Products product = new Products();
-    Database data = new Database();
+    private Products product = new Products();
+    private Database data = new Database();
+    private TableView<Products> table;
 
     public MainWindow(){
 
@@ -19,7 +21,7 @@ public class MainWindow {
         MenuItem addProductBtn = new MenuItem("Add Product");
         addProductBtn.setOnAction(e -> {
             try {
-                product.addProduct();
+                product.addProductPage();
             } catch (ClassNotFoundException e1) {
                 e1.printStackTrace();
             } catch (SQLException e1) {
@@ -29,29 +31,34 @@ public class MainWindow {
         MenuItem deleteProductBtn = new MenuItem("Delete Product");
         btnProducts.getItems().addAll(addProductBtn,deleteProductBtn);
 
-        MenuButton btnOrders = new MenuButton("Orders");
-        MenuItem newOrder = new MenuItem("New Order");
-        newOrder.setOnAction(e -> Orders.createOrder());
-        MenuItem changeOrder = new MenuItem("Change Order");
-        MenuItem deleteOrder = new MenuItem("Delete Order");
-        btnOrders.getItems().addAll(newOrder,changeOrder,deleteOrder);
         Button exit = new Button("Exit");
         exit.setOnAction(e -> Platform.exit());
 
         ToolBar toolbar = new ToolBar();
-        toolbar.getItems().addAll(btnProducts, btnOrders, new Separator(),exit);
+        toolbar.getItems().addAll(btnProducts, new Separator(),exit);
 
-        TableView table = new TableView();
         TableColumn products = new TableColumn("Products");
-        TableColumn qty = new TableColumn("Quantity");
-        TableColumn location = new TableColumn("Location");
+        TableColumn quantity = new TableColumn("Quantity");
+        TableColumn destination = new TableColumn("Location");
+        products.setCellValueFactory(new PropertyValueFactory<Products, String>("name"));
+        quantity.setCellValueFactory(new PropertyValueFactory<Products, Integer>("quantity"));
+        destination.setCellValueFactory(new PropertyValueFactory<Products, Integer>("destination"));
         products.prefWidthProperty().bind(table.widthProperty().multiply(0.66));
-        qty.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
-        location.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+        quantity.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+        destination.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
         products.setResizable(false);
-        qty.setResizable(false);
-        location.setResizable(false);
-        table.getColumns().addAll(products, qty, location);
+        quantity.setResizable(false);
+        destination.setResizable(false);
+        table.getColumns().add(products);
+        table.getColumns().add(quantity);
+        table.getColumns().add(destination);
+        try {
+            table.setItems(data.displayProducts());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         layout.setTop(toolbar);
         layout.setCenter(table);
