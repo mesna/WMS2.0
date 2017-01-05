@@ -13,19 +13,19 @@ public class Database {
         }
     }
 
-    public ObservableList<Products> displayProducts() throws ClassNotFoundException, SQLException {
+    public ObservableList<Product> displayProducts() throws ClassNotFoundException, SQLException {
 
-        ObservableList<Products> productsList = FXCollections.observableArrayList();
+        ObservableList<Product> productList = FXCollections.observableArrayList();
         try (Connection connection = getConnection()) {
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery("SELECT name, quantity, destination FROM products");
 
                 while(rs.next()) {
-                    productsList.add(new Products(rs.getString("name"), rs.getInt("quantity"), rs.getInt("destination")));
+                    productList.add(new Product(rs.getString("name"), rs.getInt("quantity"), rs.getInt("destination")));
                 }
             }
         }
-        return productsList;
+        return productList;
     }
 
     private Connection getConnection() throws SQLException {
@@ -38,7 +38,7 @@ public class Database {
         }
         try (Connection connection = getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                System.out.println("Creating a table for Products");
+                System.out.println("Creating a table for Product");
                 statement.execute("CREATE TABLE products (id integer,name varchar(30),quantity integer, destination integer, primary key(id))");
             }
         }
@@ -59,12 +59,12 @@ public class Database {
         return false;
     }
 
-    public void addProduct(String productName, Integer productQuantity, Integer productLocation) throws ClassNotFoundException, SQLException {
+    public void addProduct(Product product) throws ClassNotFoundException, SQLException {
         try (Connection connection = getConnection()) {
             PreparedStatement productAdd = connection.prepareStatement("INSERT INTO products VALUES(?,?,?,?);");
-            productAdd.setString(2, productName);
-            productAdd.setInt(3, productQuantity);
-            productAdd.setInt(4, productLocation);
+            productAdd.setString(2, product.getName());
+            productAdd.setInt(3, product.getQuantity());
+            productAdd.setInt(4, product.getDestination());
             productAdd.execute();
         }
     }
