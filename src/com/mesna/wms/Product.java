@@ -1,3 +1,4 @@
+package com.mesna.wms;
 
 public class Product {
 

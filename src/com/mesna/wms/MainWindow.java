@@ -1,3 +1,5 @@
+package com.mesna.wms;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,70 +15,66 @@ import java.sql.SQLException;
 
 public class MainWindow {
 
-    private Database data = new Database();
-    private TableView<Product> table = new TableView<>();
-    private ObservableList<Product> productList = FXCollections.observableArrayList();
+    private Database data;
+    private ProductsDAO productsDAO;
+    private TableView<Product> table;
+    private ObservableList<Product> productList;
+    private CustomToolBar toolBar;
 
     public MainWindow() {
 
+        data = new Database();
+        productsDAO = new ProductsDAO(data);
+        productList = FXCollections.observableArrayList();
+        toolBar = new CustomToolBar(this);
+        table = createTable();
         Stage window = new Stage();
         BorderPane layout = new BorderPane();
         try {
-            productList.addAll(data.displayProducts());
+            productList.addAll(productsDAO.getProducts());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        MenuButton btnProducts = new MenuButton("Product");
-        MenuItem addProductBtn = new MenuItem("Add Product");
-        addProductBtn.setOnAction(e -> {
-            try {
-                addProductPage();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        });
-        MenuItem deleteProductBtn = new MenuItem("Delete Product");
-        btnProducts.getItems().addAll(addProductBtn,deleteProductBtn);
-
-        Button exit = new Button("Exit");
-        exit.setOnAction(e -> Platform.exit());
-
-        ToolBar toolbar = new ToolBar();
-        toolbar.getItems().addAll(btnProducts, new Separator(),exit);
-
-        TableColumn products = new TableColumn("Product");
-        TableColumn quantity = new TableColumn("Quantity");
-        TableColumn destination = new TableColumn("Location");
-        products.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
-        quantity.setCellValueFactory(new PropertyValueFactory<Product, Integer>("quantity"));
-        destination.setCellValueFactory(new PropertyValueFactory<Product, Integer>("destination"));
-        products.prefWidthProperty().bind(table.widthProperty().multiply(0.66));
-        quantity.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
-        destination.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
-        products.setResizable(false);
-        quantity.setResizable(false);
-        destination.setResizable(false);
-        table.getColumns().add(products);
-        table.getColumns().add(quantity);
-        table.getColumns().add(destination);
-        table.setItems(productList);
-
-        layout.setTop(toolbar);
+        layout.setLeft(toolBar);
         layout.setCenter(table);
         layout.setStyle("-fx-background-color: #C1E3D4");
 
-        Scene scene = new Scene(layout,500,350);
+        Scene scene = new Scene(layout,550,350);
         window.setScene(scene);
         window.setResizable(false);
         window.show();
 
     }
-    public void addProductPage() throws ClassNotFoundException, SQLException{
+    public TableView createTable(){
 
+        TableView table = new TableView();
+        TableColumn products = new TableColumn("Product");
+        TableColumn quantity = new TableColumn("Quantity");
+        TableColumn destination = new TableColumn("Location");
+
+        products.setCellValueFactory(new PropertyValueFactory<Product, String>("name"));
+        quantity.setCellValueFactory(new PropertyValueFactory<Product, Integer>("quantity"));
+        destination.setCellValueFactory(new PropertyValueFactory<Product, Integer>("destination"));
+
+        products.prefWidthProperty().bind(table.widthProperty().multiply(0.66));
+        quantity.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+        destination.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+
+        products.setResizable(false);
+        quantity.setResizable(false);
+        destination.setResizable(false);
+
+        table.getColumns().add(products);
+        table.getColumns().add(quantity);
+        table.getColumns().add(destination);
+        table.setItems(productList);
+        return table;
+    }
+
+    public void addProductPage() throws ClassNotFoundException, SQLException{
+        System.out.println("Sakkdiip");
         Stage window = new Stage();
         GridPane grid = new GridPane();
         grid.setVgap(10);
@@ -93,7 +91,7 @@ public class MainWindow {
         addButton.setOnAction(e -> {
             try {
                 Product newProduct = new Product(productNameField.getText(),Integer.parseInt(productQuantityField.getText()),Integer.parseInt(productDestinationField.getText()));
-                data.addProduct(newProduct);
+                productsDAO.addProduct(newProduct);
                 productList.add(newProduct);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setContentText("Product successfully added!");
@@ -120,5 +118,14 @@ public class MainWindow {
                 addButton.requestFocus();
             }
         });
+    }
+
+    public void deleteProduct() throws ClassNotFoundException, SQLException{
+
+        ObservableList<Product> productSelected, allProducts;
+        allProducts = table.getItems();
+        productSelected = table.getSelectionModel().getSelectedItems();
+        productSelected.forEach(p -> {allProducts.remove(p); productsDAO.deleteProduct(p);});
+
     }
 }

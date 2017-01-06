@@ -1,3 +1,5 @@
+package com.mesna.wms;
+
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
