@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class CustomToolBar extends ToolBar{
 
-    private final MainWindow mainWindow;
+    private MainWindow mainWindow;
 
     public CustomToolBar(MainWindow mainWindow){
         this.mainWindow = mainWindow;

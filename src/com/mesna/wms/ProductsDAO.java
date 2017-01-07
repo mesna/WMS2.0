@@ -7,7 +7,7 @@ import java.sql.*;
 
 public class ProductsDAO {
 
-    private final Database data;
+    private Database data;
 
     public ProductsDAO(Database data) {
         this.data = data;
