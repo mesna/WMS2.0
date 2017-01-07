@@ -1,6 +1,5 @@
 package com.mesna.wms;
 
-import com.sun.deploy.security.ValidationState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +28,10 @@ public class MainWindow {
         productList = FXCollections.observableArrayList();
         toolBar = new CustomToolBar(this);
         table = createTable();
+
         Stage window = new Stage();
         BorderPane layout = new BorderPane();
+
         try {
             productList.addAll(productsDAO.getProducts());
         } catch (ClassNotFoundException e) {
@@ -38,6 +39,7 @@ public class MainWindow {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         layout.setLeft(toolBar);
         layout.setCenter(table);
         layout.setStyle("-fx-background-color: #C1E3D4");
@@ -86,16 +88,19 @@ public class MainWindow {
 
         TextField productNameField = new TextField();
         productNameField.setPromptText("Product name");
+
         TextField productQuantityField = new TextField();
         productQuantityField.setPromptText("Quantity");
+
         TextField productDestinationField = new TextField();
         productDestinationField.setPromptText("Location (Example 123)");
+
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
             try {
                 if (productNameField.getText().equals("") || productQuantityField.getText().equals("") || productDestinationField.getText().equals("")) {
                     openRequiredFieldsAlert();
-                } else if (productDestinationField.getLength() != 3 || isNumeric(productDestinationField.getText()) || isNumeric(productQuantityField.getText())) {
+                } else if (productDestinationField.getLength() != 3 || !isNumeric(productDestinationField.getText()) || !isNumeric(productQuantityField.getText())) {
                     openWrongInputAlert();
                 } else {
                     Product newProduct = new Product(productNameField.getText(), Integer.parseInt(productQuantityField.getText()), Integer.parseInt(productDestinationField.getText()));
@@ -111,10 +116,12 @@ public class MainWindow {
                     e1.printStackTrace();
                 }
         });
+
         grid.add(productNameField, 0, 0);
         grid.add(productQuantityField, 0, 1);
         grid.add(productDestinationField, 0, 2);
         grid.add(addButton, 0, 3);
+
         Scene content = new Scene(grid, 200,200);
         window.setScene(content);
         window.show();
@@ -148,6 +155,13 @@ public class MainWindow {
         alert.showAndWait();
     }
 
+    public void underConstruction(){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setContentText("I come from a land down under");
+        alert.showAndWait();
+    }
+
     public boolean isNumeric(String value){
         try{
            Integer.parseInt(value);
@@ -157,13 +171,11 @@ public class MainWindow {
         return true;
     }
 
-
     public void deleteProduct() throws ClassNotFoundException, SQLException{
 
         ObservableList<Product> productSelected, allProducts;
         allProducts = table.getItems();
         productSelected = table.getSelectionModel().getSelectedItems();
         productSelected.forEach(p -> {allProducts.remove(p); productsDAO.deleteProduct(p);});
-
     }
 }

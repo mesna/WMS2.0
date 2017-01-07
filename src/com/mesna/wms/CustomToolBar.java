@@ -22,7 +22,6 @@ public class CustomToolBar extends ToolBar{
         MenuItem addProductBtn = new MenuItem("Add Product");
         addProductBtn.setOnAction(e -> {
             try {
-                System.out.println("fu");
                 mainWindow.addProductPage();
             } catch (ClassNotFoundException e1) {
                 e1.printStackTrace();
@@ -30,6 +29,7 @@ public class CustomToolBar extends ToolBar{
                 e1.printStackTrace();
             }
         });
+
         MenuItem deleteProductBtn = new MenuItem("Delete Product");
         deleteProductBtn.setOnAction(e -> {
             try {
@@ -40,19 +40,24 @@ public class CustomToolBar extends ToolBar{
                 e1.printStackTrace();
             }
         });
+
         btnProducts.getItems().addAll(addProductBtn, deleteProductBtn);
+
         Button exit = new Button("Exit");
         exit.setMaxWidth(Double.MAX_VALUE);
         exit.setOnAction(e -> Platform.exit());
 
         Button orders = new Button("Orders");
         orders.setMaxWidth(Double.MAX_VALUE);
+        orders.setOnAction(e -> mainWindow.underConstruction());
 
         Button clients = new Button("Clients");
         clients.setMaxWidth(Double.MAX_VALUE);
+        clients.setOnAction(e -> mainWindow.underConstruction());
 
         Button administration = new Button("Administration");
         administration.setMaxWidth(Double.MAX_VALUE);
+        administration.setOnAction(e -> mainWindow.underConstruction());
 
         setOrientation(Orientation.VERTICAL);
         getItems().addAll(btnProducts, new Separator(), orders, new Separator(), clients, new Separator(), administration, new Separator(), exit);

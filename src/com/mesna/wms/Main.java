@@ -6,8 +6,7 @@ import javafx.stage.Stage;
 public class Main extends Application{
 
     public void start(Stage primaryStage) throws Exception{
-
-        Login login = new Login();
-
+        LoginStage login = new LoginStage();
+        login.show();
     }
 }
