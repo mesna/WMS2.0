@@ -35,5 +35,4 @@ public class Product {
     public void setDestination(Integer destination) {
         this.destination = destination;
     }
-
 }

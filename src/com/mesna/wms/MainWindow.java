@@ -1,5 +1,6 @@
 package com.mesna.wms;
 
+import com.sun.deploy.security.ValidationState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,6 +45,7 @@ public class MainWindow {
         Scene scene = new Scene(layout,550,350);
         window.setScene(scene);
         window.setResizable(false);
+        window.setTitle("Warehouse Managment System 2.0");
         window.show();
 
     }
@@ -61,6 +63,8 @@ public class MainWindow {
         products.prefWidthProperty().bind(table.widthProperty().multiply(0.66));
         quantity.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
         destination.prefWidthProperty().bind(table.widthProperty().multiply(0.17));
+        quantity.setStyle( "-fx-alignment: CENTER");
+        destination.setStyle( "-fx-alignment: CENTER");
 
         products.setResizable(false);
         quantity.setResizable(false);
@@ -74,7 +78,7 @@ public class MainWindow {
     }
 
     public void addProductPage() throws ClassNotFoundException, SQLException{
-        System.out.println("Sakkdiip");
+
         Stage window = new Stage();
         GridPane grid = new GridPane();
         grid.setVgap(10);
@@ -85,24 +89,27 @@ public class MainWindow {
         TextField productQuantityField = new TextField();
         productQuantityField.setPromptText("Quantity");
         TextField productDestinationField = new TextField();
-        productDestinationField.setPromptText("Location (Example 12345)");
-
+        productDestinationField.setPromptText("Location (Example 123)");
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
             try {
-                Product newProduct = new Product(productNameField.getText(),Integer.parseInt(productQuantityField.getText()),Integer.parseInt(productDestinationField.getText()));
-                productsDAO.addProduct(newProduct);
-                productList.add(newProduct);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setContentText("Product successfully added!");
-                alert.setHeaderText(null);
-                alert.showAndWait();
-                window.close();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+                if (productNameField.getText().equals("") || productQuantityField.getText().equals("") || productDestinationField.getText().equals("")) {
+                    openRequiredFieldsAlert();
+                } else if (productDestinationField.getLength() != 3 || isNumeric(productDestinationField.getText()) || isNumeric(productQuantityField.getText())) {
+                    openWrongInputAlert();
+                } else {
+                    Product newProduct = new Product(productNameField.getText(), Integer.parseInt(productQuantityField.getText()), Integer.parseInt(productDestinationField.getText()));
+                    productsDAO.addProduct(newProduct);
+                    productList.add(newProduct);
+
+                    openAddProductConfirmation();
+                    window.close();
+                }
+                } catch(ClassNotFoundException e1){
+                    e1.printStackTrace();
+                } catch(SQLException e1){
+                    e1.printStackTrace();
+                }
         });
         grid.add(productNameField, 0, 0);
         grid.add(productQuantityField, 0, 1);
@@ -119,6 +126,37 @@ public class MainWindow {
             }
         });
     }
+
+    public void openRequiredFieldsAlert(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Fill all required fields!");
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    public void openWrongInputAlert(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText("Wrong quantity or location!");
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    public void openAddProductConfirmation(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("Product successfully added!");
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    public boolean isNumeric(String value){
+        try{
+           Integer.parseInt(value);
+        }catch(NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
+
 
     public void deleteProduct() throws ClassNotFoundException, SQLException{
 

@@ -25,7 +25,7 @@ public class Database {
         }
         try (Connection connection = getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                System.out.println("Creating a table for com.mesna.wms.Product");
+                System.out.println("Creating a table for Product");
                 statement.execute("CREATE TABLE products (id integer,name varchar(30),quantity integer, destination integer, primary key(id))");
             }
         }

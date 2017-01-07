@@ -46,7 +46,6 @@ public class ProductsDAO {
                 productDelete.setInt(2, product.getQuantity());
                 productDelete.setInt(3, product.getDestination());
                 productDelete.execute();
-                System.out.println(product.getName() + " " + product.getQuantity() + " " + product.getDestination());
             }
         }catch (SQLException e1){
             e1.printStackTrace();
