@@ -134,6 +134,14 @@ public class MainWindow {
         });
     }
 
+    public void deleteProduct() throws ClassNotFoundException, SQLException{
+
+        ObservableList<Product> productSelected, allProducts;
+        allProducts = table.getItems();
+        productSelected = table.getSelectionModel().getSelectedItems();
+        productSelected.forEach(product -> {allProducts.remove(product); productsDAO.deleteProduct(product);});
+    }
+
     public void openRequiredFieldsAlert(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText("Fill all required fields!");
@@ -169,13 +177,5 @@ public class MainWindow {
             return false;
         }
         return true;
-    }
-
-    public void deleteProduct() throws ClassNotFoundException, SQLException{
-
-        ObservableList<Product> productSelected, allProducts;
-        allProducts = table.getItems();
-        productSelected = table.getSelectionModel().getSelectedItems();
-        productSelected.forEach(p -> {allProducts.remove(p); productsDAO.deleteProduct(p);});
     }
 }

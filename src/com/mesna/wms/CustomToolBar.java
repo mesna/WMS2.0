@@ -19,6 +19,7 @@ public class CustomToolBar extends ToolBar{
 
         MenuButton btnProducts = new MenuButton("Product");
         btnProducts.setMaxWidth(Double.MAX_VALUE);
+
         MenuItem addProductBtn = new MenuItem("Add Product");
         addProductBtn.setOnAction(e -> {
             try {

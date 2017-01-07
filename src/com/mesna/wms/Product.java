@@ -16,23 +16,11 @@ public class Product {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
     public Integer getDestination() {
         return destination;
-    }
-
-    public void setDestination(Integer destination) {
-        this.destination = destination;
     }
 }
