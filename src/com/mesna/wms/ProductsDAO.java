@@ -19,6 +19,7 @@ public class ProductsDAO {
         try (Connection connection = data.getConnection()) {
             try (Statement statement = connection.createStatement()) {
                 ResultSet rs = statement.executeQuery("SELECT name, quantity, destination FROM products");
+                System.out.println("Getting data from products table");
 
                 while(rs.next()) {
                     productList.add(new Product(rs.getString("name"), rs.getInt("quantity"), rs.getInt("destination")));

@@ -12,10 +12,10 @@ public class CustomToolBar extends ToolBar{
 
     public CustomToolBar(MainWindow mainWindow){
         this.mainWindow = mainWindow;
-        initialize();
+        createToolbar();
     }
 
-    public void initialize() {
+    public void createToolbar() {
 
         MenuButton btnProducts = new MenuButton("Product");
         btnProducts.setMaxWidth(Double.MAX_VALUE);

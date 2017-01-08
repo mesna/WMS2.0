@@ -32,6 +32,7 @@ public class Database {
         try (Connection connection = getConnection()) {
             try (Statement selectStatement = connection.createStatement()) {
                 ResultSet result = selectStatement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='products'");
+                System.out.println("Selecting table from database");
                 if (result.next()) {
                     return true;
                 }

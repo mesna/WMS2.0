@@ -12,8 +12,9 @@ import javafx.stage.Stage;
 
 public class LoginStage extends Stage{
 
-        TextField userName;
-        PasswordField passWord;
+        private TextField userName;
+        private PasswordField passWord;
+        private MainWindow mainWindow;
 
     public LoginStage() {
 
@@ -60,7 +61,7 @@ public class LoginStage extends Stage{
     private void checkLogin(){
 
         if(userName.getText().equals("User") && passWord.getText().equals("Pass")){
-            MainWindow mainWindow = new MainWindow();
+            mainWindow = new MainWindow();
             close();
         } else{
            wrongLoginAlert();
